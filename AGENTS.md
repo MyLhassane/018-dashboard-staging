@@ -28,8 +28,8 @@
 | Location | Path |
 |----------|------|
 | Local | `/Users/hassan/01_Workspaces/dev/active/018-elphenomeno/elphenomeno-dashboard-staging` |
-| GitHub | `018-dashboard-staging` |
-| Vercel | `zero-seventeen-dashboard-staging.vercel.app` |
+| GitHub | `MyLhassane/018-dashboard-staging` |
+| Vercel | `elphenomeno-dashboard-staging.vercel.app` |
 
 ### Image Storage
 | Environment | GitHub Repo |
@@ -56,16 +56,12 @@
 ## Current State (2026-06-30)
 
 ### Completed
-- ✅ Phase 1: Foundation (Vite, React, Tailwind, Firebase)
-- ✅ Phase 2: Core Dashboard (Players, Challenges, Categories pages)
-- ✅ Pagination (25/page, mobile-first)
-- ✅ Image upload via Cloudflare Worker → GitHub
-- ✅ Offline-first with IndexedDB + sync engine
-- ✅ Vercel deployment with SPA routing
+- ✅ Fulfilled from production (all pages, components, i18n)
+- ✅ Publisher to GitHub challenges repo (`src/lib/publisher.ts`)
+- ✅ i18n keys for publish flow (ar, en, fr)
+- ✅ Deployed to Vercel
 
-### Staging Experiments
-- ✅ Publisher to GitHub challenges repo
-- ✅ i18n keys for publish flow
+### In Progress
 - 🔄 Testing challenge publishing
 
 ## Important Notes
@@ -75,14 +71,14 @@
 - Partners do NOT see this
 - Safe to experiment and break things
 
-### Deployment
+## Deployment
 ```bash
 git push origin main
 vercel --prod --yes
-# Live at: https://zero-seventeen-dashboard-staging.vercel.app
+# Live at: https://elphenomeno-dashboard-staging.vercel.app
 ```
 
 ## Resources
-- **GitHub:** `018-dashboard-staging`
-- **Vercel:** `zero-seventeen-dashboard-staging.vercel.app`
+- **GitHub:** https://github.com/MyLhassane/018-dashboard-staging
+- **Vercel:** https://elphenomeno-dashboard-staging.vercel.app
 - **Firebase:** https://console.firebase.google.com/project/zero-seventeen-dashboard
