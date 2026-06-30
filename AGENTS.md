@@ -6,6 +6,7 @@
 - **NEVER push to GitHub without explicit user request**
 - **NEVER deploy to Vercel without explicit user request**
 - **The user is the final decision maker - always wait for approval**
+- **We are in development mode - do NOT deploy unless told explicitly**
 - **DO NOT delete or overwrite existing data in Firebase without confirmation**
 
 ### Code Quality
@@ -61,8 +62,50 @@
 - ✅ i18n keys for publish flow (ar, en, fr)
 - ✅ Deployed to Vercel
 
-### In Progress
-- 🔄 Testing challenge publishing
+### Completed - Accordion Challenges UI (Sprint 2026-06-30)
+- ✅ Challenges nav link → accordion with 5 game sub-items in Sidebar
+- ✅ Routes: `/challenges/connections`, `/challenges/factor`, `/challenges/decode`, `/challenges/impostor`, `/challenges/grid`
+- ✅ GameChallenges.tsx — per-game page with add/edit/publish/delete + search
+- ✅ Game-specific editor components in `src/components/challenges/`:
+  - `ConnectionsEditor` — Full grid editor (remit cells + players with v[] assignments)
+  - `FactorEditor` — Trait categories + one primary trait per player
+  - `DecodeEditor` — Mystery player selector + 9 clue progression (order, text, answer)
+  - `ImpostorEditor` — Category selector + player list with impostor/real toggle
+  - `GridEditor` — Row/column category selectors + 3×3 grid cell assignment
+- ✅ types.ts: Added `GameType`, `DecodeClue`, `ImpostorConfig`, `GridConfig`, extended `Challenge` with `gameType`
+- ✅ i18n: `games.*` and `gameChallenges.*` keys in all 3 locales (ar, en, fr)
+- ✅ Build passes clean
+
+### Current Data Architecture
+```
+Challenge {
+  gameNumber: number
+  gameType: "connections" | "factor" | "decode" | "impostor" | "grid"
+  remit: RemitItem[][]          // categories grid (Connections, Factor)
+  players: ChallengePlayer[]    // players with v: number[] (Connections: categories, Factor: traits)
+  decodeConfig?: DecodeClue[]   // Decode R9: 9 clues with order/text/answer
+  impostorConfig?: ImpostorConfig  // Impostor: { categoryId, impostorPlayerId }
+  gridConfig?: GridConfig          // Grid: { rowCategories, columnCategories, cells }
+  publishedAt: string | null
+  updatedAt, updatedBy
+}
+```
+
+### New Architecture — Game Challenges (2026-06-30)
+- **New Firebase path**: `elphenomeno/challenges/{gameType}/{gameNumber}` (separate from old `challenges/{gameNumber}`)
+- **JSON upload button** on each game's challenges page — upload `.json` file directly to Firebase (bypasses Firebase Console's destructive import)
+- **Auto-index**: Each game type gets `elphenomeno/challenges/{gameType}/index.json` auto-generated on write/delete
+- **Publish to GitHub**: `publishGameChallenge()` and `publishAllGameChallenges()` write to `elphenomeno/challenges/{gameType}/{gameNumber}.json`
+- `db.ts`: Added `getGameChallenges()`, `setGameChallenge()`, `removeGameChallenge()`, `getGameChallengeIndex()`
+- `publisher.ts`: Added `publishGameChallenge()`, `publishGameIndex()`, `unpublishGameChallenge()`, `publishAllGameChallenges()`
+- `GameChallenges.tsx`: Rewritten to load/save from new path + JSON upload modal
+- Old `challenges/{gameNumber}` path left completely untouched
+
+### Fixes Applied (2026-06-30)
+- ✅ `publisher.ts`: `stripInternalFields` now keeps `gameType`, `decodeConfig`, `impostorConfig`, `gridConfig`
+- ✅ `db.ts`: `getFullChallengeList` returns all new fields (`gameType`, optional configs`)
+- ✅ Real connections challenge data created at `new_connections_challenge.json` (uses real players from Firebase export)
+- ⚠️ Push script at `push_challenge.py` — run with Firebase credentials to deploy challenge #1109
 
 ## Important Notes
 

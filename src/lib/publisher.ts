@@ -50,12 +50,17 @@ async function putFile(path: string, content: object, message: string): Promise<
 }
 
 function stripInternalFields(challenge: Challenge) {
-  return {
+  const cleaned: Record<string, unknown> = {
     gameNumber: challenge.gameNumber,
+    gameType: challenge.gameType,
     remit: challenge.remit,
     players: challenge.players,
     publishedAt: challenge.publishedAt,
   };
+  if (challenge.decodeConfig) cleaned.decodeConfig = challenge.decodeConfig;
+  if (challenge.impostorConfig) cleaned.impostorConfig = challenge.impostorConfig;
+  if (challenge.gridConfig) cleaned.gridConfig = challenge.gridConfig;
+  return cleaned;
 }
 
 export interface PublishResult {
@@ -117,5 +122,59 @@ export async function publishAll(
 
   await publishIndex(successNumbers);
 
+  return results;
+}
+
+// === Game-specific publishing (elphenomeno/challenges/{gameType}/) ===
+
+export async function publishGameChallenge(challenge: Challenge): Promise<PublishResult> {
+  try {
+    const path = `/elphenomeno/challenges/${challenge.gameType}/${challenge.gameNumber}.json`;
+    const ok = await putFile(path, challenge, `Publish ${challenge.gameType} challenge #${challenge.gameNumber}`);
+    return { gameNumber: challenge.gameNumber, status: ok ? "success" : "failed" };
+  } catch (e: any) {
+    return { gameNumber: challenge.gameNumber, status: "failed", error: e.message };
+  }
+}
+
+export async function publishGameIndex(gameType: string, gameNumbers: number[]): Promise<boolean> {
+  const index = {
+    version: 1,
+    updatedAt: new Date().toISOString(),
+    challenges: gameNumbers.sort((a, b) => a - b),
+  };
+  return putFile(`/elphenomeno/challenges/${gameType}/index.json`, index, `Update ${gameType} index`);
+}
+
+export async function unpublishGameChallenge(gameType: string, gameNumber: number): Promise<boolean> {
+  const path = `/elphenomeno/challenges/${gameType}/${gameNumber}.json`;
+  const sha = await getFileSha(path);
+  if (!sha) return true;
+  const res = await githubFetch(path, {
+    method: "DELETE",
+    body: JSON.stringify({
+      message: `Unpublish ${gameType} challenge #${gameNumber}`,
+      sha,
+      committer: { name: "Dashboard Bot", email: "dashboard@fifa2026.local" },
+    }),
+  });
+  return res.ok;
+}
+
+export async function publishAllGameChallenges(
+  gameType: string,
+  challenges: Challenge[],
+  onProgress?: (result: PublishResult) => void
+): Promise<PublishResult[]> {
+  const results: PublishResult[] = [];
+  for (const challenge of challenges) {
+    const result = await publishGameChallenge(challenge);
+    results.push(result);
+    onProgress?.(result);
+  }
+  const successNumbers = results
+    .filter((r) => r.status === "success")
+    .map((r) => r.gameNumber);
+  await publishGameIndex(gameType, successNumbers);
   return results;
 }

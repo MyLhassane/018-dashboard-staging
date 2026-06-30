@@ -1,5 +1,5 @@
 import { db, ref, get, set, update, remove, query, orderByChild, limitToLast } from "./firebase";
-import type { Challenge, Player, Category, GameConfig, Deployment, DevLogEntry, DevLogStatus, ActivityEntry } from "./types";
+import type { Challenge, GameType, Player, Category, GameConfig, Deployment, DevLogEntry, DevLogStatus, ActivityEntry } from "./types";
 
 function dashRef(...paths: string[]) {
   return ref(db, paths.join("/"));
@@ -87,11 +87,15 @@ export async function getFullChallengeList(): Promise<Challenge[]> {
   const data = snap.val();
   return Object.values(data).map((c: any) => ({
     gameNumber: c.gameNumber,
+    gameType: c.gameType ?? "connections",
     remit: c.remit ?? [],
     players: c.players ?? [],
     publishedAt: c.publishedAt ?? null,
     updatedAt: c.updatedAt ?? "",
     updatedBy: c.updatedBy ?? "",
+    decodeConfig: c.decodeConfig ?? undefined,
+    impostorConfig: c.impostorConfig ?? undefined,
+    gridConfig: c.gridConfig ?? undefined,
   }));
 }
 
@@ -120,6 +124,57 @@ export async function deletePlayer(id: number): Promise<void> {
 
 export async function deleteCategory(id: string): Promise<void> {
   await remove(dashRef("categories", id));
+}
+
+// Game Challenges — new path: elphenomeno/challenges/{gameType}/{gameNumber}
+export async function getGameChallenges(gameType: GameType): Promise<Challenge[]> {
+  const snap = await get(dashRef("elphenomeno", "challenges", gameType));
+  if (!snap.exists()) return [];
+  const data = snap.val();
+  return Object.entries(data)
+    .filter(([k]) => k !== "index")
+    .map(([_, v]) => v as Challenge)
+    .filter((c) => c && c.gameNumber)
+    .sort((a, b) => b.gameNumber - a.gameNumber);
+}
+
+export async function getGameChallengeList(gameType: GameType): Promise<number[]> {
+  const snap = await get(dashRef("elphenomeno", "challenges", gameType));
+  if (!snap.exists()) return [];
+  const data = snap.val();
+  return Object.keys(data)
+    .filter((k) => k !== "index")
+    .map(Number)
+    .filter((n) => !isNaN(n))
+    .sort((a, b) => a - b);
+}
+
+export async function getGameChallengeIndex(gameType: GameType): Promise<{ version: number; updatedAt: string; challenges: number[] } | null> {
+  const snap = await get(dashRef("elphenomeno", "challenges", gameType, "index"));
+  return snap.exists() ? snap.val() : null;
+}
+
+export async function setGameChallenge(gameType: GameType, gameNumber: number, data: Challenge): Promise<void> {
+  await set(dashRef("elphenomeno", "challenges", gameType, String(gameNumber)), data);
+  // Update index
+  const numbers = await getGameChallengeList(gameType);
+  if (!numbers.includes(gameNumber)) numbers.push(gameNumber);
+  await set(dashRef("elphenomeno", "challenges", gameType, "index"), {
+    version: 1,
+    updatedAt: new Date().toISOString(),
+    challenges: numbers.sort((a, b) => a - b),
+  });
+}
+
+export async function removeGameChallenge(gameType: GameType, gameNumber: number): Promise<void> {
+  await remove(dashRef("elphenomeno", "challenges", gameType, String(gameNumber)));
+  // Update index
+  const numbers = (await getGameChallengeList(gameType)).filter((n) => n !== gameNumber);
+  await set(dashRef("elphenomeno", "challenges", gameType, "index"), {
+    version: 1,
+    updatedAt: new Date().toISOString(),
+    challenges: numbers.sort((a, b) => a - b),
+  });
 }
 
 // Deployments

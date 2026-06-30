@@ -282,5 +282,27 @@
     "appearance": "المظهر",
     "language": "اللغة",
     "languageDescription": "اختر لغة الواجهة"
+  },
+  "games": {
+    "connections": "ارتباطات الفينومينو",
+    "factor": "عامل الفينومينو",
+    "decode": "فك شفرة R9",
+    "impostor": "المحتال: كأس العالم",
+    "grid": "تحدي الشبكة"
+  },
+  "gameChallenges": {
+    "title": "إدارة تحديات {{game}}",
+    "noChallenges": "لا توجد تحديات لهذه اللعبة",
+    "createFirst": "أنشئ أول تحدٍ",
+    "publish": "نشر",
+    "draft": "مسودة",
+    "published": "منشور",
+    "unpublish": "إلغاء النشر",
+    "newChallenge": "تحدي جديد",
+    "challengeNumber": "رقم التحدي",
+    "players": "اللاعبون",
+    "categories": "الفئات",
+    "status": "الحالة",
+    "lastUpdate": "آخر تحديث"
   }
 }

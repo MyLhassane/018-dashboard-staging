@@ -8,16 +8,19 @@
         ".write": "root.child('admins/'+auth.uid).child('role').val() === 'admin'"
       }
     },
-    "challenges": {
+    "elphenomeno": {
       ".read": "auth != null && root.child('admins/'+auth.uid).exists()",
       ".write": "auth != null && root.child('admins/'+auth.uid).exists()",
-      "$gameNumber": {
-        ".validate": "newData.hasChildren(['gameNumber', 'updatedAt', 'updatedBy'])",
-        "gameNumber": { ".validate": "newData.isNumber()" },
-        "publishedAt": { ".validate": "newData.isString() || newData.val() == null" },
-        "updatedAt": { ".validate": "newData.isString()" },
-        "updatedBy": { ".validate": "newData.isString()" }
+      "challenges": {
+        "$gameType": {
+          ".read": "auth != null && root.child('admins/'+auth.uid).exists()",
+          ".write": "auth != null && root.child('admins/'+auth.uid).exists()"
+        }
       }
+    },
+    "challenges": {
+      ".read": "auth != null && root.child('admins/'+auth.uid).exists()",
+      ".write": "auth != null && root.child('admins/'+auth.uid).exists()"
     },
     "players": {
       ".read": "auth != null && root.child('admins/'+auth.uid).exists()",

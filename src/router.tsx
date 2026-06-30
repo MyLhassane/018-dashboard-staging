@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Overview from "./pages/Overview";
 import Players from "./pages/Players";
 import Challenges from "./pages/Challenges";
+import GameChallenges from "./pages/GameChallenges";
 import Categories from "./pages/Categories";
 import Config from "./pages/Config";
 import Publish from "./pages/Publish";
@@ -70,6 +71,46 @@ export default function AppRouter() {
           element={
             <ProtectedRoute>
               <Challenges />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/challenges/connections"
+          element={
+            <ProtectedRoute>
+              <GameChallenges gameType="connections" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/challenges/factor"
+          element={
+            <ProtectedRoute>
+              <GameChallenges gameType="factor" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/challenges/decode"
+          element={
+            <ProtectedRoute>
+              <GameChallenges gameType="decode" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/challenges/impostor"
+          element={
+            <ProtectedRoute>
+              <GameChallenges gameType="impostor" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/challenges/grid"
+          element={
+            <ProtectedRoute>
+              <GameChallenges gameType="grid" />
             </ProtectedRoute>
           }
         />

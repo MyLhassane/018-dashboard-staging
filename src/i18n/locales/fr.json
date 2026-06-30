@@ -284,5 +284,27 @@
     "appearance": "Apparence",
     "language": "Langue",
     "languageDescription": "Sélectionnez la langue du tableau de bord"
+  },
+  "games": {
+    "connections": "Connexions Phénomène",
+    "factor": "Facteur Phénomène",
+    "decode": "Décoder R9",
+    "impostor": "Imposteur : Coupe du Monde",
+    "grid": "Défi Grille"
+  },
+  "gameChallenges": {
+    "title": "Défis {{game}}",
+    "noChallenges": "Aucun défi pour ce jeu",
+    "createFirst": "Créez votre premier défi",
+    "publish": "Publier",
+    "draft": "Brouillon",
+    "published": "Publié",
+    "unpublish": "Dépublier",
+    "newChallenge": "Nouveau défi",
+    "challengeNumber": "Numéro du défi",
+    "players": "Joueurs",
+    "categories": "Catégories",
+    "status": "Statut",
+    "lastUpdate": "Dernière mise à jour"
   }
 }

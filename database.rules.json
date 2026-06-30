@@ -8,6 +8,10 @@
       ".read": "auth != null",
       ".write": "auth != null"
     },
+    "elphenomeno": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
     "challenges": {
       ".read": "auth != null",
       ".write": "auth != null"

@@ -282,5 +282,27 @@
     "appearance": "Appearance",
     "language": "Language",
     "languageDescription": "Select your preferred language"
+  },
+  "games": {
+    "connections": "Phenomenon Connections",
+    "factor": "Phenomenon Factor",
+    "decode": "R9 Decode",
+    "impostor": "Impostor: World Cup",
+    "grid": "Grid Challenge"
+  },
+  "gameChallenges": {
+    "title": "{{game}} Challenges",
+    "noChallenges": "No challenges for this game",
+    "createFirst": "Create your first challenge",
+    "publish": "Publish",
+    "draft": "Draft",
+    "published": "Published",
+    "unpublish": "Unpublish",
+    "newChallenge": "New Challenge",
+    "challengeNumber": "Challenge Number",
+    "players": "Players",
+    "categories": "Categories",
+    "status": "Status",
+    "lastUpdate": "Last Updated"
   }
 }
