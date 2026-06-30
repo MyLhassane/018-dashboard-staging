@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIFA World Cup 2026 — إدارة اللاعبين</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #232735;
+  --border: #2a2f3f;
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.15);
+  --text: #e8e8ed;
+  --text2: #8b8fa3;
+  --red: #e74c3c;
+  --green: #2ecc71;
+  --blue: #3498db;
+  --sidebar-w: 300px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+  z-index: 50;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-header { padding: 20px 16px; border-bottom: 1px solid var(--border); }
+.sidebar-header h1 { font-size: 16px; font-weight: 800; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+.sidebar-header p { font-size: 12px; color: var(--text2); margin-top: 4px; }
+.sidebar-search { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.sidebar-search input {
+  width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); font-family: inherit; font-size: 13px; outline: none; transition: border 0.2s;
+}
+.sidebar-search input:focus { border-color: var(--gold); }
+
+.player-list { flex: 1; overflow-y: auto; padding: 8px; }
+.player-list::-webkit-scrollbar { width: 4px; }
+.player-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.player-item {
+  padding: 10px 12px; border-radius: 8px; cursor: pointer; display: flex;
+  align-items: center; justify-content: space-between; transition: all 0.2s;
+  font-size: 13px; font-weight: 500; margin-bottom: 2px; gap: 8px;
+}
+.player-item:hover { background: var(--surface2); }
+.player-item.active { background: var(--gold-dim); color: var(--gold); font-weight: 700; }
+.player-item .player-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.player-item .ch-count {
+  font-size: 10px; padding: 2px 8px; border-radius: 6px; background: var(--surface2);
+  font-weight: 700; color: var(--text2); flex-shrink: 0;
+}
+.player-item.active .ch-count { background: rgba(201,168,76,0.2); color: var(--gold); }
+
+.sidebar-toggle {
+  display: none; position: fixed; top: 12px; right: 12px; z-index: 100;
+  width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); font-size: 20px; cursor: pointer;
+  align-items: center; justify-content: center;
+}
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 49; }
+
+.main { flex: 1; padding: 24px 32px; max-width: calc(100vw - var(--sidebar-w)); overflow-y: auto; height: 100vh; }
+.main::-webkit-scrollbar { width: 4px; }
+.main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+}
+.toolbar-left { display: flex; align-items: center; gap: 12px; }
+.toolbar h2 { font-size: 22px; font-weight: 800; }
+
+.badge { font-size: 12px; padding: 4px 12px; border-radius: 6px; font-weight: 700; }
+.badge-id { background: var(--gold-dim); color: var(--gold); }
+.badge-gray { background: var(--surface2); color: var(--text2); }
+
+.btn {
+  padding: 8px 20px; border-radius: 8px; border: none; font-family: inherit;
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--gold); color: #000; }
+.btn-primary:hover { background: #dbb956; transform: translateY(-1px); }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text2); }
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+.btn-sm { padding: 4px 12px; font-size: 12px; }
+
+.section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+.section-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.section-header h3 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.section-body { padding: 20px; }
+
+.player-info { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.player-info .field-group { display: flex; flex-direction: column; gap: 4px; }
+.player-info .field-group label { font-size: 11px; color: var(--text2); font-weight: 600; }
+.player-info .field-group input {
+  padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); font-family: inherit;
+  font-size: 14px; outline: none; min-width: 180px; transition: border 0.2s;
+}
+.player-info .field-group input:focus { border-color: var(--gold); }
+
+.v-tags { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 0; }
+.v-tag {
+  display: inline-flex; align-items: center; gap: 4px; font-size: 12px;
+  padding: 5px 12px; border-radius: 8px; background: var(--gold-dim);
+  color: var(--gold); font-weight: 700; transition: all 0.2s;
+}
+.v-tag .remove-v { cursor: pointer; font-size: 14px; line-height: 1; opacity: 0.5; transition: opacity 0.2s; }
+.v-tag .remove-v:hover { opacity: 1; }
+.v-tag.unresolved { background: rgba(231,76,60,0.15); color: var(--red); }
+
+.add-v-row {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 12px;
+}
+.add-v-row input {
+  padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--surface2); color: var(--text); font-family: inherit;
+  font-size: 13px; outline: none; width: 100px; direction: ltr;
+}
+.add-v-row input:focus { border-color: var(--gold); }
+.add-v-row .hint { font-size: 11px; color: var(--text2); }
+
+.pos-section { margin-top: 16px; }
+.pos-section label { font-size: 11px; color: var(--text2); font-weight: 600; display: block; margin-bottom: 6px; }
+.pos-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.pos-tag {
+  font-size: 12px; padding: 4px 14px; border-radius: 6px; background: var(--surface2);
+  font-weight: 700; color: var(--text);
+}
+
+.empty-state { text-align: center; padding: 80px 20px; color: var(--text2); }
+.empty-state .icon { font-size: 56px; margin-bottom: 16px; }
+.empty-state h3 { font-size: 20px; margin-bottom: 8px; color: var(--text); }
+.empty-state p { font-size: 14px; }
+
+.loading { display: flex; align-items: center; justify-content: center; padding: 80px; }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(50%) translateY(100px);
+  padding: 12px 24px; border-radius: 10px; font-weight: 700; font-size: 14px;
+  z-index: 200; opacity: 0; transition: all 0.4s;
+}
+.toast.show { opacity: 1; transform: translateX(50%) translateY(0); }
+.toast.success { background: var(--green); color: #000; }
+.toast.error { background: var(--red); color: #fff; }
+.toast.info { background: var(--blue); color: #fff; }
+
+@media (max-width: 768px) {
+  .sidebar { position: fixed; right: 0; top: 0; transform: translateX(100%); width: 280px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar.open + .sidebar-overlay { display: block; }
+  .sidebar-toggle { display: flex; }
+  .main { max-width: 100vw; padding: 16px; padding-top: 64px; }
+}
+@media (max-width: 480px) {
+  .toolbar { flex-direction: column; align-items: flex-start; }
+  .player-info { flex-direction: column; }
+  .player-info .field-group input { min-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<button class="sidebar-toggle" id="sidebarToggle">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h1>👥 اللاعبون</h1>
+    <p id="playerCount">0 لاعب</p>
+  </div>
+  <div class="sidebar-search">
+    <input type="text" id="searchInput" placeholder="ابحث عن لاعب..." oninput="filterPlayers()">
+  </div>
+  <div class="player-list" id="playerList"></div>
+</aside>
+
+<main class="main" id="mainContent">
+  <div class="empty-state" id="emptyState">
+    <div class="icon">👥</div>
+    <h3>اختر لاعباً من القائمة</h3>
+    <p>اختر لاعباً من القائمة الجانبية لعرض وتعديل بياناته</p>
+  </div>
+  <div id="editorContent" style="display:none;"></div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let compiledData = null;
+let selectedPlayerId = null;
+let selectedData = null;
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(err.error || res.statusText);
+  }
+  return res.json();
+}
+
+async function init() {
+  try {
+    compiledData = await api('/api/players/compiled');
+    document.getElementById('playerCount').textContent = `${compiledData.totalPlayers} لاعب في ${compiledData.totalChallenges} تحدٍ`;
+    renderPlayerList();
+    api('/api/players/compile').then(data => { compiledData = data; renderPlayerList(); }).catch(() => {});
+  } catch (e) {
+    showToast('خطأ: ' + e.message, 'error');
+  }
+}
+
+function renderPlayerList() {
+  const container = document.getElementById('playerList');
+  const query = (document.getElementById('searchInput').value || '').toLowerCase();
+  const filtered = Object.entries(compiledData.players || {}).filter(([, p]) => {
+    const name = `${p.g} ${p.f}`.trim().toLowerCase();
+    return name.includes(query) || String(p.id).includes(query);
+  });
+  container.innerHTML = filtered.map(([pid, p]) => {
+    const name = `${p.g} ${p.f}`.trim() || `#${pid}`;
+    const chCount = Object.keys(p.challenges || {}).length;
+    return `<div class="player-item ${selectedPlayerId === pid ? 'active' : ''}" onclick="selectPlayer('${pid}')">
+      <span class="player-name">${escapeHtml(name)}</span>
+      <span class="ch-count">${chCount}</span>
+    </div>`;
+  }).join('');
+  if (!filtered.length) container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2);">لا يوجد لاعبين</div>';
+}
+
+function filterPlayers() { renderPlayerList(); }
+
+async function selectPlayer(pid) {
+  selectedPlayerId = pid;
+  document.getElementById('sidebar').classList.remove('open');
+  renderPlayerList();
+  document.getElementById('emptyState').style.display = 'none';
+  const p = compiledData.players[pid];
+  if (!p) return;
+  selectedData = JSON.parse(JSON.stringify(p));
+  selectedData._original = JSON.parse(JSON.stringify(p));
+  renderPlayerDetail(pid);
+}
+
+function collectUniqV(challenges, remitMap) {
+  const seen = new Set();
+  const result = [];
+  for (const [chId, chData] of Object.entries(challenges)) {
+    const remit = remitMap[chId] || [];
+    for (const vid of (chData.v || [])) {
+      if (seen.has(vid)) continue;
+      seen.add(vid);
+      const match = remit.find(r => r.id === vid);
+      result.push({ id: vid, label: match ? (match.displayName || match.name) : `#${vid}`, resolved: !!match, challengeId: chId });
+    }
+  }
+  return result;
+}
+
+function collectUniqPos(challenges) {
+  const positions = new Set();
+  for (const chData of Object.values(challenges)) {
+    if (chData.p) positions.add(chData.p);
+  }
+  return [...positions];
+}
+
+function renderPlayerDetail(pid) {
+  const p = selectedData;
+  const playerName = `${p.g} ${p.f}`.trim() || `#${pid}`;
+  const challenges = p.challenges || {};
+  const chIds = Object.keys(challenges);
+  const remitMap = compiledData.remitMap || {};
+
+  const allV = collectUniqV(challenges, remitMap);
+  const allPos = collectUniqPos(challenges);
+
+  const editor = document.getElementById('editorContent');
+  editor.style.display = 'block';
+  editor.innerHTML = `
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2>${escapeHtml(playerName)}</h2>
+        <span class="badge badge-id">ID: ${pid}</span>
+        <span class="badge badge-gray">${chIds.length} تحدٍ</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="recompilePlayers()">🔄 إعادة تجميع</button>
+        <button class="btn btn-primary" onclick="saveAllChanges()">💾 حفظ الكل</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><h3>📝 بيانات اللاعب</h3></div>
+      <div class="section-body">
+        <div class="player-info">
+          <div class="field-group">
+            <label>الاسم الأول</label>
+            <input type="text" id="playerG" value="${escapeHtml(p.g || '')}" placeholder="مثال: Lionel">
+          </div>
+          <div class="field-group">
+            <label>اللقب</label>
+            <input type="text" id="playerF" value="${escapeHtml(p.f || '')}" placeholder="مثال: Messi">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><h3>🏷️ التحديات <span class="badge badge-gray">${allV.length} عنصر</span></h3></div>
+      <div class="section-body">
+        ${allV.length === 0 ? '<div style="color:var(--text2);font-size:14px;">لا توجد عناصر في التحديات</div>' : `
+        <div class="v-tags" id="uniqVTags">
+          ${allV.map(v => `
+            <span class="v-tag ${v.resolved ? '' : 'unresolved'}">
+              <span class="remove-v" onclick="removeUniqV(${v.id})">×</span>
+              #${escapeHtml(v.label)}
+              <span style="font-size:9px;opacity:0.4;">(${v.id})</span>
+            </span>
+          `).join('')}
+        </div>`}
+        <div class="add-v-row">
+          <input type="number" id="addVInput" placeholder="ID..." onkeydown="if(event.key==='Enter')addUniqV()">
+          <button class="btn btn-sm btn-outline" onclick="addUniqV()">+ إضافة</button>
+          <span class="hint">يُضاف الرابط لكل التحديات</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><h3>📍 المراكز <span class="badge badge-gray">${allPos.length}</span></h3></div>
+      <div class="section-body">
+        ${allPos.length === 0 ? '<div style="color:var(--text2);font-size:14px;">لا يوجد مركز محدد</div>' : `
+        <div class="pos-tags">
+          ${allPos.map(pos => `<span class="pos-tag">${pos}</span>`).join('')}
+        </div>`}
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <select id="posSelect" style="padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:inherit;font-size:13px;outline:none;">
+            <option value="">— بدون —</option>
+            ${['GK','CB','RB','LB','CM','CDM','CAM','LW','RW','ST','CF'].map(pos =>
+              `<option value="${pos}">${pos}</option>`
+            ).join('')}
+          </select>
+          <button class="btn btn-sm btn-outline" onclick="addPosToAll()">+ إضافة للكل</button>
+          <span class="hint" style="font-size:11px;color:var(--text2);">يُضاف المركز لكل التحديات</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ===== Unique V operations =====
+function addUniqV() {
+  const input = document.getElementById('addVInput');
+  const val = parseInt(input.value);
+  if (isNaN(val)) { showToast('أدخل رقماً صحيحاً', 'error'); return; }
+
+  const allV = collectUniqV(selectedData.challenges, compiledData.remitMap || {});
+  if (allV.some(v => v.id === val)) { showToast(`#${val} موجود مسبقاً`, 'info'); input.value = ''; return; }
+
+  for (const chData of Object.values(selectedData.challenges)) {
+    if (!chData.v) chData.v = [];
+    if (!chData.v.includes(val)) chData.v.push(val);
+  }
+  input.value = '';
+  renderPlayerDetail(selectedPlayerId);
+  showToast(`تم إضافة #${val} لجميع التحديات`, 'success');
+}
+
+function removeUniqV(vid) {
+  for (const chData of Object.values(selectedData.challenges)) {
+    if (!chData.v) continue;
+    const idx = chData.v.indexOf(vid);
+    if (idx > -1) chData.v.splice(idx, 1);
+  }
+  renderPlayerDetail(selectedPlayerId);
+  showToast(`تم حذف #${vid} من جميع التحديات`, 'success');
+}
+
+// ===== Position operations =====
+function addPosToAll() {
+  const sel = document.getElementById('posSelect');
+  const pos = sel.value;
+  if (!pos) { showToast('اختر مركزاً أولاً', 'error'); return; }
+  for (const chData of Object.values(selectedData.challenges)) {
+    chData.p = pos;
+  }
+  renderPlayerDetail(selectedPlayerId);
+  showToast(`تم إضافة المركز ${pos} لجميع التحديات`, 'success');
+}
+
+// ===== Save =====
+async function saveAllChanges() {
+  const pid = selectedPlayerId;
+  if (!pid || !selectedData) return;
+  const g = document.getElementById('playerG')?.value?.trim() || '';
+  const f = document.getElementById('playerF')?.value?.trim() || '';
+  selectedData.g = g;
+  selectedData.f = f;
+  if (!compiledData.players[pid]) compiledData.players[pid] = selectedData;
+  compiledData.players[pid].g = g;
+  compiledData.players[pid].f = f;
+  compiledData.players[pid].challenges = selectedData.challenges;
+
+  const savePayload = JSON.parse(JSON.stringify(compiledData));
+  savePayload.players[pid] = { id: Number(pid), g, f, challenges: selectedData.challenges };
+
+  const btn = document.querySelector('.btn-primary');
+  const orig = btn?.textContent || '';
+  if (btn) { btn.textContent = '⏳ جاري الحفظ...'; btn.disabled = true; }
+  try {
+    const result = await api('/api/players/save', { method: 'POST', body: JSON.stringify(savePayload) });
+    compiledData = result;
+    selectedData._original = JSON.parse(JSON.stringify(selectedData));
+    renderPlayerList();
+    renderPlayerDetail(pid);
+    showToast('✅ تم الحفظ بنجاح', 'success');
+  } catch (e) {
+    showToast('❌ فشل الحفظ: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.textContent = orig; btn.disabled = false; }
+  }
+}
+
+async function recompilePlayers() {
+  try {
+    compiledData = await api('/api/players/compile', { method: 'POST' });
+    document.getElementById('playerCount').textContent = `${compiledData.totalPlayers} لاعب في ${compiledData.totalChallenges} تحدٍ`;
+    renderPlayerList();
+    if (selectedPlayerId) renderPlayerDetail(selectedPlayerId);
+    showToast('🔄 تمت إعادة التجميع', 'success');
+  } catch (e) { showToast('❌ ' + e.message, 'error'); }
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div'); div.textContent = str; return div.innerHTML;
+}
+
+document.getElementById('sidebarToggle').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('open'); });
+document.getElementById('sidebarOverlay').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('open'); });
+
+init();
+</script>
+</body>
+</html>

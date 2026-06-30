@@ -1,0 +1,74 @@
+{
+  "rules": {
+    "admins": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('admins/'+auth.uid).child('role').val() === 'admin'",
+      "$uid": {
+        ".read": "auth.uid == $uid || root.child('admins/'+auth.uid).child('role').val() === 'admin'",
+        ".write": "root.child('admins/'+auth.uid).child('role').val() === 'admin'"
+      }
+    },
+    "challenges": {
+      ".read": "auth != null && root.child('admins/'+auth.uid).exists()",
+      ".write": "auth != null && root.child('admins/'+auth.uid).exists()",
+      "$gameNumber": {
+        ".validate": "newData.hasChildren(['gameNumber', 'updatedAt', 'updatedBy'])",
+        "gameNumber": { ".validate": "newData.isNumber()" },
+        "publishedAt": { ".validate": "newData.isString() || newData.val() == null" },
+        "updatedAt": { ".validate": "newData.isString()" },
+        "updatedBy": { ".validate": "newData.isString()" }
+      }
+    },
+    "players": {
+      ".read": "auth != null && root.child('admins/'+auth.uid).exists()",
+      ".write": "auth != null && root.child('admins/'+auth.uid).exists()",
+      "$playerId": {
+        "id": { ".validate": "newData.isNumber()" },
+        "f": { ".validate": "newData.isString()" },
+        "g": { ".validate": "newData.isString()" },
+        "challengeCount": { ".validate": "newData.isNumber()" },
+        "image": { ".validate": "newData.isString() || newData.val() == null" }
+      }
+    },
+    "categories": {
+      ".read": "auth != null && root.child('admins/'+auth.uid).exists()",
+      ".write": "auth != null && root.child('admins/'+auth.uid).exists()",
+      "$categoryId": {
+        "id": { ".validate": "newData.isString()" },
+        "name": { ".validate": "newData.isString()" },
+        "type": { ".validate": "newData.isString()" },
+        "media": { ".validate": "newData.isString()" },
+        "description": { ".validate": "newData.isString()" },
+        "sortOrder": { ".validate": "newData.isNumber()" }
+      }
+    },
+    "config": {
+      ".read": "auth != null && root.child('admins/'+auth.uid).exists()",
+      ".write": "auth != null && root.child('admins/'+auth.uid).child('role').val() === 'admin'"
+    },
+    "deployments": {
+      ".read": "auth != null && root.child('admins/'+auth.uid).exists()",
+      ".write": "auth != null && root.child('admins/'+auth.uid).exists()",
+      "$timestamp": {
+        ".validate": "newData.hasChildren(['deployedAt', 'deployedBy', 'status'])",
+        "deployedAt": { ".validate": "newData.isString()" },
+        "deployedBy": { ".validate": "newData.isString()" },
+        "status": { ".validate": "newData.val() == 'success' || newData.val() == 'failed'" },
+        "vercelUrl": { ".validate": "newData.isString()" }
+      }
+    },
+    "devLog": {
+      ".read": "auth != null && root.child('admins/'+auth.uid).exists()",
+      ".write": "auth != null && root.child('admins/'+auth.uid).exists()",
+      "$entryId": {
+        ".validate": "newData.hasChildren(['id', 'title', 'type', 'status', 'timestamp'])",
+        "id": { ".validate": "newData.isString()" },
+        "title": { ".validate": "newData.isString()" },
+        "type": { ".validate": "newData.isString()" },
+        "status": { ".validate": "newData.val() == 'new' || newData.val() == 'in_progress' || newData.val() == 'done'" },
+        "timestamp": { ".validate": "newData.isNumber()" },
+        "notes": { ".validate": "newData.isString() || newData.val() == null" }
+      }
+    }
+  }
+}

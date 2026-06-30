@@ -1,0 +1,41 @@
+# Build output
+dist/
+
+# Dependencies
+node_modules/
+
+# Vercel
+.vercel/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Firebase sensitive files
+firebase-auth.json
+
+# Backup files (legacy)
+*.bak
+
+# Compiled data (legacy import)
+compiled_players.json
+compiled_players.json.bak
+
+# Legacy daily challenges (source JSON — not used in new workflow)
+daily_challenges/
+
+# Firebase export template (keep local, not in repo)
+zero-seventeen-dashboard-default-rtdb-export.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vercel

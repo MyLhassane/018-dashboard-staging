@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIFA World Cup 2026 — التحديات اليومية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #232735;
+  --border: #2a2f3f;
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.15);
+  --text: #e8e8ed;
+  --text2: #8b8fa3;
+  --red: #e74c3c;
+  --green: #2ecc71;
+  --blue: #3498db;
+  --sidebar-w: 280px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+  z-index: 50;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header h1 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-header p {
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 4px;
+}
+
+.sidebar-search {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-search input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.sidebar-search input:focus {
+  border-color: var(--gold);
+}
+
+.file-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.file-list::-webkit-scrollbar { width: 4px; }
+.file-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.file-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.file-item:hover { background: var(--surface2); }
+.file-item.active {
+  background: var(--gold-dim);
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.file-item .badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.file-item .badge.active-s { background: var(--green); color: #000; }
+.file-item .badge.inactive { background: var(--text2); color: #000; }
+
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 100;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 49;
+}
+
+/* Main */
+.main {
+  flex: 1;
+  padding: 24px 32px;
+  max-width: calc(100vw - var(--sidebar-w));
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.main::-webkit-scrollbar { width: 4px; }
+.main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolbar h2 {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.toolbar .file-id {
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: var(--gold-dim);
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.btn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: #000;
+}
+
+.btn-primary:hover {
+  background: #dbb956;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+
+.btn-outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.btn-danger {
+  background: var(--red);
+  color: #fff;
+}
+
+.btn-danger:hover { opacity: 0.9; }
+
+.btn-sm {
+  padding: 4px 12px;
+  font-size: 12px;
+}
+
+/* Sections */
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.section-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.count-badge {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text2);
+  font-weight: 700;
+}
+
+.section-body {
+  padding: 20px;
+}
+
+/* Remit Grid */
+.remit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.remit-cell {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.remit-cell:hover {
+  border-color: var(--gold);
+}
+
+.remit-cell .disp {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.remit-cell .meta {
+  font-size: 11px;
+  color: var(--text2);
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.remit-cell .type-tag {
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--surface2);
+  font-weight: 700;
+}
+
+.remit-cell .helper {
+  font-size: 10px;
+  color: var(--gold);
+  margin-top: 4px;
+}
+
+.remit-cell .remove-cell {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remit-cell:hover .remove-cell { opacity: 0.7; }
+.remit-cell .remove-cell:hover { opacity: 1; }
+
+/* Players Table */
+.players-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.players-table th {
+  text-align: right;
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.players-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(42,47,63,0.5);
+  vertical-align: middle;
+}
+
+.players-table tr:hover td {
+  background: var(--surface2);
+}
+
+.players-table input, .players-table select {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  width: 100%;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.players-table input:focus, .players-table select:focus {
+  border-color: var(--gold);
+  background: var(--bg);
+}
+
+.players-table td:first-child { border-radius: 0 8px 8px 0; }
+.players-table td:last-child { border-radius: 8px 0 0 8px; }
+
+.tag-list {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--gold-dim);
+  color: var(--gold);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tag:hover { opacity: 0.8; }
+.tag.removed { background: var(--red); color: #fff; text-decoration: line-through; }
+
+.add-player-row {
+  background: var(--bg) !important;
+}
+
+.add-player-row td {
+  padding: 12px;
+}
+
+.add-player-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.add-player-form input,
+.add-player-form select {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  outline: none;
+}
+
+.add-player-form input:focus,
+.add-player-form select:focus {
+  border-color: var(--gold);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(50%) translateY(100px);
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  z-index: 200;
+  opacity: 0;
+  transition: all 0.4s;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(50%) translateY(0);
+}
+
+.toast.success { background: var(--green); color: #000; }
+.toast.error { background: var(--red); color: #fff; }
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text2);
+}
+
+.empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state h3 { font-size: 18px; margin-bottom: 8px; color: var(--text); }
+.empty-state p { font-size: 14px; }
+
+/* Loading */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    transform: translateX(100%);
+    width: 280px;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar.open + .sidebar-overlay {
+    display: block;
+  }
+
+  .sidebar-toggle {
+    display: flex;
+  }
+
+  .main {
+    max-width: 100vw;
+    padding: 16px;
+    padding-top: 64px;
+  }
+
+  .remit-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .players-table {
+    font-size: 12px;
+  }
+
+  .players-table th, .players-table td {
+    padding: 6px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .remit-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 150;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.modal .form-group {
+  margin-bottom: 12px;
+}
+
+.modal .form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 4px;
+}
+
+.modal .form-group input,
+.modal .form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.modal .form-group input:focus,
+.modal .form-group select:focus {
+  border-color: var(--gold);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  justify-content: flex-end;
+}
+</style>
+</head>
+<body>
+
+<button class="sidebar-toggle" id="sidebarToggle">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h1>🎯 التحديات اليومية</h1>
+    <p id="fileCount">0 ملف</p>
+  </div>
+  <div class="sidebar-search">
+    <input type="text" id="searchInput" placeholder="ابحث عن ملف..." oninput="filterFiles()">
+  </div>
+  <div class="file-list" id="fileList"></div>
+</aside>
+
+<!-- Main -->
+<main class="main" id="mainContent">
+  <div class="empty-state" id="emptyState">
+    <div class="icon">🎯</div>
+    <h3>اختر تحدياً من القائمة</h3>
+    <p>اختر ملف تحدٍ من القائمة الجانبية لبدء التعديل</p>
+  </div>
+  <div id="editorContent" style="display:none;">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2 id="fileTitle">Challenge</h2>
+        <span class="file-id" id="fileIdBadge">#1000</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="addRemitRow()">+ إضافة خلية</button>
+        <button class="btn btn-primary" onclick="saveFile()">💾 حفظ</button>
+      </div>
+    </div>
+
+    <!-- Remit Section -->
+    <div class="section">
+      <div class="section-header">
+        <h3>📋 شبكة التحدي <span class="count-badge" id="remitCount">0</span></h3>
+      </div>
+      <div class="section-body" id="remitContainer">
+        <div class="remit-grid" id="remitGrid"></div>
+      </div>
+    </div>
+
+    <!-- Players Section -->
+    <div class="section">
+      <div class="section-header">
+        <h3>👥 اللاعبون <span class="count-badge" id="playerCount">0</span></h3>
+      </div>
+      <div class="section-body" style="overflow-x:auto;">
+        <table class="players-table">
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>اللقب</th>
+              <th>المركز</th>
+              <th>الروابط (v)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="playersBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Modal: Add Remit Cell -->
+<div class="modal-overlay" id="remitModal">
+  <div class="modal">
+    <h3>إضافة خلية جديدة</h3>
+    <div class="form-group">
+      <label>الاسم</label>
+      <input type="text" id="rmtName" placeholder="مثال: Arsenal">
+    </div>
+    <div class="form-group">
+      <label>الاسم المعروض</label>
+      <input type="text" id="rmtDisplay" placeholder="مثال: ARS">
+    </div>
+    <div class="form-group">
+      <label>النوع</label>
+      <select id="rmtType">
+        <option value="1">1 - منتخب</option>
+        <option value="2">2 - نادي</option>
+        <option value="3">3 - دوري</option>
+        <option value="4">4 - مدرب</option>
+        <option value="5">5 - زميل</option>
+        <option value="6">6 - لقب/جائزة</option>
+        <option value="8">8 - إنجاز</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>لاحقة (suffix) - اختياري</label>
+      <input type="text" id="rmtSuffix" placeholder="مثال: winner">
+    </div>
+    <div class="form-group">
+      <label>نص مساعد (helperText) - اختياري</label>
+      <input type="text" id="rmtHelper" placeholder="مثال: data from 1960 onwards">
+    </div>
+    <div class="form-group">
+      <label>بادئة (prefix) - اختياري</label>
+      <input type="text" id="rmtPrefix" placeholder="مثال: Managed by">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeRemitModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="confirmAddRemit()">إضافة</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== State =====
+let files = [];
+let currentFile = null;
+let currentData = null;
+
+// ===== API =====
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(err.error || res.statusText);
+  }
+  return res.json();
+}
+
+// ===== Sidebar =====
+async function loadFileList() {
+  const data = await api('/api/files');
+  files = data.files;
+  document.getElementById('fileCount').textContent = `${files.length} ملف`;
+  renderFileList();
+}
+
+function renderFileList() {
+  const container = document.getElementById('fileList');
+  const query = (document.getElementById('searchInput').value || '').toLowerCase();
+  const filtered = files.filter(f => f.name.includes(query) || String(f.id).includes(query));
+  container.innerHTML = filtered.map(f => `
+    <div class="file-item ${currentFile === f.name ? 'active' : ''}" onclick="selectFile('${f.name}')">
+      <span>#${f.id}</span>
+      <span class="badge ${f.id >= 1000 ? 'active-s' : 'inactive'}">${f.name}</span>
+    </div>
+  `).join('');
+}
+
+function filterFiles() {
+  renderFileList();
+}
+
+// ===== Select File =====
+async function selectFile(name) {
+  currentFile = name;
+  document.getElementById('sidebar').classList.remove('open');
+  renderFileList();
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('editorContent').style.display = 'block';
+  document.getElementById('editorContent').innerHTML = `
+    <div class="loading"><div class="spinner"></div></div>
+  `;
+
+  const data = await api(`/api/files/${name}`);
+  currentData = data;
+  renderEditor(data);
+}
+
+function renderEditor(data) {
+  const { fileName, gameData } = data;
+  const { remit, players } = gameData || { remit: [], players: [] };
+
+  document.getElementById('editorContent').innerHTML = `
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2 id="fileTitle">Challenge</h2>
+        <span class="file-id" id="fileIdBadge">#${fileName.replace('.json','')}</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="addRemitRow()">+ إضافة خلية</button>
+        <button class="btn btn-primary" onclick="saveFile()">💾 حفظ</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h3>📋 شبكة التحدي <span class="count-badge" id="remitCount">${remit.length}</span></h3>
+      </div>
+      <div class="section-body" id="remitContainer">
+        <div class="remit-grid" id="remitGrid"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h3>👥 اللاعبون <span class="count-badge" id="playerCount">${players.length}</span></h3>
+      </div>
+      <div class="section-body" style="overflow-x:auto;">
+        <table class="players-table">
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>اللقب</th>
+              <th>المركز</th>
+              <th>الروابط (v)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="playersBody"></tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  renderRemit(remit);
+  renderPlayers(players);
+}
+
+// ===== Remit =====
+function renderRemit(remit) {
+  const grid = document.getElementById('remitGrid');
+  if (!grid) return;
+
+  const typeNames = {
+    1: 'منتخب', 2: 'نادي', 3: 'دوري', 4: 'مدرب',
+    5: 'زميل', 6: 'لقب', 8: 'إنجاز',
+  };
+
+  grid.innerHTML = remit.map((group, gi) => {
+    if (group.length === 1) {
+      const c = group[0];
+      return `<div class="remit-cell" data-index="${gi}">
+        <button class="remove-cell" onclick="removeRemitCell(${gi})" title="حذف">✕</button>
+        <div class="disp">${c.displayName || c.name}</div>
+        <div class="meta">
+          <span class="type-tag">${typeNames[c.type] || c.type}</span>
+          ${c.suffix ? `<span style="color:var(--blue)">${c.suffix}</span>` : ''}
+          ${c.prefix ? `<span style="color:var(--green)">${c.prefix}</span>` : ''}
+        </div>
+        ${c.helperText ? `<div class="helper">${c.helperText}</div>` : ''}
+      </div>`;
+    }
+    // Multi-cell
+    return `<div class="remit-cell multi" data-index="${gi}" style="border-color:var(--gold);background:var(--gold-dim);">
+      <button class="remove-cell" onclick="removeRemitCell(${gi})" title="حذف">✕</button>
+      <div style="font-size:10px;color:var(--gold);font-weight:700;margin-bottom:4px;">أو (OR)</div>
+      ${group.map(c => `<div class="disp">${c.displayName || c.name}</div>
+        <div class="meta"><span class="type-tag">${typeNames[c.type] || c.type}</span></div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function removeRemitCell(index) {
+  const remit = currentData.gameData.remit;
+  remit.splice(index, 1);
+  document.getElementById('remitCount').textContent = remit.length;
+  renderRemit(remit);
+  showToast('تم حذف الخلية', 'success');
+}
+
+function addRemitRow() {
+  document.getElementById('remitModal').classList.add('open');
+  document.getElementById('rmtName').value = '';
+  document.getElementById('rmtDisplay').value = '';
+  document.getElementById('rmtType').value = '1';
+  document.getElementById('rmtSuffix').value = '';
+  document.getElementById('rmtHelper').value = '';
+  document.getElementById('rmtPrefix').value = '';
+}
+
+function closeRemitModal() {
+  document.getElementById('remitModal').classList.remove('open');
+}
+
+function confirmAddRemit() {
+  const name = document.getElementById('rmtName').value.trim();
+  const display = document.getElementById('rmtDisplay').value.trim();
+  const type = parseInt(document.getElementById('rmtType').value);
+  const suffix = document.getElementById('rmtSuffix').value.trim();
+  const helper = document.getElementById('rmtHelper').value.trim();
+  const prefix = document.getElementById('rmtPrefix').value.trim();
+
+  if (!name || !display) {
+    showToast('الاسم والاسم المعروض مطلوبان', 'error');
+    return;
+  }
+
+  const cell = { id: Date.now(), name, type, displayName: display };
+  if (suffix) cell.suffix = suffix;
+  if (helper) cell.helperText = helper;
+  if (prefix) cell.prefix = prefix;
+
+  currentData.gameData.remit.push([cell]);
+  document.getElementById('remitCount').textContent = currentData.gameData.remit.length;
+  renderRemit(currentData.gameData.remit);
+  closeRemitModal();
+  showToast('تم إضافة الخلية', 'success');
+}
+
+// ===== Players =====
+function renderPlayers(players) {
+  const tbody = document.getElementById('playersBody');
+  if (!tbody) return;
+
+  const remitFlat = currentData.gameData.remit.flat();
+
+  tbody.innerHTML = players.map((p, i) => {
+    const vTags = (p.v || []).map(vid => {
+      const match = remitFlat.find(r => r.id === vid);
+      const label = match ? match.displayName : `#${vid}`;
+      return `<span class="tag" onclick="togglePlayerV(${i}, ${vid})">${label}</span>`;
+    }).join('');
+
+    return `<tr>
+      <td><input type="text" value="${escapeHtml(p.g || '')}" onchange="updatePlayer(${i},'g',this.value)" placeholder="الاسم"></td>
+      <td><input type="text" value="${escapeHtml(p.f || '')}" onchange="updatePlayer(${i},'f',this.value)" placeholder="اللقب"></td>
+      <td>
+        <select onchange="updatePlayer(${i},'p',this.value)">
+          <option value="">—</option>
+          <option value="GK" ${p.p === 'GK' ? 'selected' : ''}>GK</option>
+          <option value="CB" ${p.p === 'CB' ? 'selected' : ''}>CB</option>
+          <option value="RB" ${p.p === 'RB' ? 'selected' : ''}>RB</option>
+          <option value="LB" ${p.p === 'LB' ? 'selected' : ''}>LB</option>
+          <option value="CM" ${p.p === 'CM' ? 'selected' : ''}>CM</option>
+          <option value="CDM" ${p.p === 'CDM' ? 'selected' : ''}>CDM</option>
+          <option value="CAM" ${p.p === 'CAM' ? 'selected' : ''}>CAM</option>
+          <option value="LW" ${p.p === 'LW' ? 'selected' : ''}>LW</option>
+          <option value="RW" ${p.p === 'RW' ? 'selected' : ''}>RW</option>
+          <option value="ST" ${p.p === 'ST' ? 'selected' : ''}>ST</option>
+          <option value="CF" ${p.p === 'CF' ? 'selected' : ''}>CF</option>
+        </select>
+      </td>
+      <td><div class="tag-list">${vTags || '<span style="color:var(--text2);font-size:11px;">لا توجد روابط</span>'}</div></td>
+      <td><button class="btn btn-sm btn-danger" onclick="removePlayer(${i})">✕</button></td>
+    </tr>`;
+  }).join('');
+
+  // Add row
+  tbody.innerHTML += `
+    <tr class="add-player-row">
+      <td colspan="5">
+        <div class="add-player-form">
+          <input type="text" id="newPlayerG" placeholder="الاسم (مثال: Lionel)">
+          <input type="text" id="newPlayerF" placeholder="اللقب (مثال: Messi)">
+          <select id="newPlayerP">
+            <option value="">المركز</option>
+            <option value="GK">GK</option>
+            <option value="CB">CB</option>
+            <option value="RB">RB</option>
+            <option value="LB">LB</option>
+            <option value="CM">CM</option>
+            <option value="CDM">CDM</option>
+            <option value="CAM">CAM</option>
+            <option value="LW">LW</option>
+            <option value="RW">RW</option>
+            <option value="ST">ST</option>
+            <option value="CF">CF</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="addPlayer()">+ إضافة</button>
+        </div>
+      </td>
+    </tr>`;
+}
+
+function updatePlayer(index, field, value) {
+  if (!currentData) return;
+  currentData.gameData.players[index][field] = field === 'v' ? (value || []) : value;
+}
+
+function togglePlayerV(playerIndex, vid) {
+  const p = currentData.gameData.players[playerIndex];
+  if (!p) return;
+  if (!p.v) p.v = [];
+  const idx = p.v.indexOf(vid);
+  if (idx > -1) {
+    p.v.splice(idx, 1);
+  } else {
+    p.v.push(vid);
+  }
+  renderPlayers(currentData.gameData.players);
+}
+
+function removePlayer(index) {
+  currentData.gameData.players.splice(index, 1);
+  document.getElementById('playerCount').textContent = currentData.gameData.players.length;
+  renderPlayers(currentData.gameData.players);
+  showToast('تم حذف اللاعب', 'success');
+}
+
+function addPlayer() {
+  const g = document.getElementById('newPlayerG').value.trim();
+  const f = document.getElementById('newPlayerF').value.trim();
+  const p = document.getElementById('newPlayerP').value;
+
+  if (!g && !f) {
+    showToast('الاسم أو اللقب مطلوب', 'error');
+    return;
+  }
+
+  currentData.gameData.players.push({
+    id: Date.now(),
+    f: f || '?',
+    g: g || '',
+    v: [],
+    ...(p ? { p } : {}),
+  });
+
+  document.getElementById('newPlayerG').value = '';
+  document.getElementById('newPlayerF').value = '';
+  document.getElementById('newPlayerP').value = '';
+  document.getElementById('playerCount').textContent = currentData.gameData.players.length;
+  renderPlayers(currentData.gameData.players);
+  showToast('تم إضافة اللاعب', 'success');
+}
+
+// ===== Save =====
+async function saveFile() {
+  if (!currentFile || !currentData) return;
+
+  const btn = document.querySelector('.btn-primary');
+  const orig = btn.textContent;
+  btn.textContent = '⏳ جاري الحفظ...';
+  btn.disabled = true;
+
+  try {
+    await api(`/api/files/${currentFile}`, {
+      method: 'POST',
+      body: JSON.stringify(currentData),
+    });
+    showToast('✅ تم الحفظ بنجاح', 'success');
+  } catch (e) {
+    showToast('❌ فشل الحفظ: ' + e.message, 'error');
+  } finally {
+    btn.textContent = orig;
+    btn.disabled = false;
+  }
+}
+
+// ===== Helpers =====
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ===== Init =====
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+document.getElementById('sidebarOverlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+});
+
+loadFileList();
+</script>
+</body>
+</html>

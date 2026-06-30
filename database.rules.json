@@ -1,0 +1,32 @@
+{
+  "rules": {
+    "admins": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "players": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "challenges": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "categories": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "config": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "deployments": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "devLog": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}

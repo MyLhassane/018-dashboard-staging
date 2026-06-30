@@ -1,0 +1,16 @@
+name = "fifa2026-upload"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Environment variables (non-sensitive)
+[vars]
+B2_ENDPOINT = "https://api.backblazeb2.com"
+ALLOWED_ORIGINS = "*"
+
+# Secrets (set via wrangler secret put):
+#   B2_KEY_ID          - Backblaze B2 application key ID
+#   B2_APP_KEY         - Backblaze B2 application key
+#   B2_BUCKET_ID       - Backblaze B2 bucket ID
+#   B2_BUCKET_NAME     - Backblaze B2 bucket name
+#   UPLOAD_SECRET      - Shared secret for frontend auth
