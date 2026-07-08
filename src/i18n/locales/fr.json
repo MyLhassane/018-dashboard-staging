@@ -300,8 +300,9 @@
     "languageDescription": "Sélectionnez la langue du tableau de bord"
   },
   "games": {
-    "connections": "Connexions Phénomène",
-    "factor": "Facteur Phénomène",
+    "elphenomeno": "El Phenomeno",
+    "connections": "Connexions",
+    "factor": "Facteur",
     "decode": "Décoder R9",
     "impostor": "Imposteur : Coupe du Monde",
     "grid": "Défi Grille"

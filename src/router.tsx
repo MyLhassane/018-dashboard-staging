@@ -75,6 +75,14 @@ export default function AppRouter() {
           }
         />
         <Route
+          path="/challenges/elphenomeno"
+          element={
+            <ProtectedRoute>
+              <GameChallenges gameType="elphenomeno" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/challenges/connections"
           element={
             <ProtectedRoute>

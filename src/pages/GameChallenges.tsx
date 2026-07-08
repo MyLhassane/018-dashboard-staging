@@ -17,6 +17,7 @@ import GridEditor from "../components/challenges/GridEditor";
 import JsonUploadModal from "../components/challenges/JsonUploadModal";
 
 const GAME_NAMES: Record<string, string> = {
+  elphenomeno: "games.elphenomeno",
   connections: "games.connections",
   factor: "games.factor",
   decode: "games.decode",
@@ -117,6 +118,8 @@ export default function GameChallenges({ gameType }: GameChallengesProps) {
       onDelete: handleDelete,
     };
     switch (gameType) {
+      case "elphenomeno":
+        return <ConnectionsEditor {...commonProps} categories={categories} players={players} positions={positions} />;
       case "connections":
         return <ConnectionsEditor {...commonProps} categories={categories} players={players} positions={positions} />;
       case "factor":

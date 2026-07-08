@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { LayoutDashboard, Users, Target, Tags, Settings, Rocket, DoorOpen, LogOut, ChevronDown, ScrollText, Database, Puzzle, Star, Key, Clapperboard, Grid3x3 } from "lucide-react";
+import { LayoutDashboard, Users, Target, Tags, Settings, Rocket, DoorOpen, LogOut, ChevronDown, ScrollText, Database, Zap, Puzzle, Star, Key, Clapperboard, Grid3x3 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
 const links = [
@@ -12,6 +12,7 @@ const links = [
 ];
 
 const gameChildren = [
+  { path: "/challenges/elphenomeno", label: "games.elphenomeno", gameType: "elphenomeno", icon: Zap },
   { path: "/challenges/connections", label: "games.connections", gameType: "connections", icon: Puzzle },
   { path: "/challenges/factor", label: "games.factor", gameType: "factor", icon: Star },
   { path: "/challenges/decode", label: "games.decode", gameType: "decode", icon: Key },

@@ -16,7 +16,7 @@ export interface ChallengePlayer {
   p?: string;
 }
 
-export type GameType = "connections" | "factor" | "decode" | "impostor" | "grid";
+export type GameType = "elphenomeno" | "connections" | "factor" | "decode" | "impostor" | "grid";
 
 export interface DecodeClue {
   order: number;

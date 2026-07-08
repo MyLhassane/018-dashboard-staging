@@ -298,8 +298,9 @@
     "languageDescription": "اختر لغة الواجهة"
   },
   "games": {
-    "connections": "ارتباطات الفينومينو",
-    "factor": "عامل الفينومينو",
+    "elphenomeno": "إل فينومينو",
+    "connections": "ارتباطات",
+    "factor": "عامل",
     "decode": "فك شفرة R9",
     "impostor": "المحتال: كأس العالم",
     "grid": "تحدي الشبكة"

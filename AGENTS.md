@@ -76,13 +76,22 @@
 - ✅ i18n: `games.*` and `gameChallenges.*` keys in all 3 locales (ar, en, fr)
 - ✅ Build passes clean
 
+### Added - El Phenomeno Challenges (Sprint 2026-07-08)
+- ✅ New `elphenomeno` gameType added to `GameType` union (sorted first as primary game)
+- ✅ Route: `/challenges/elphenomeno` — main game challenges page
+- ✅ Sidebar: added "إل فينومينو" as first item in التحديات accordion (Zap icon)
+- ✅ i18n: added `games.elphenomeno` in all 3 locales
+- ✅ Renamed "ارتباطات الفينومينو" → "ارتباطات" and "عامل الفينومينو" → "عامل" (English/French: removed "Phenomenon"/"Phénomène") to keep "El Phenomeno" unique as the main game name
+- ✅ Editor: temporarily reuses ConnectionsEditor (same 3×3 remit grid + player assignment UI), to be redesigned later
+- ✅ Build passes clean
+
 ### Current Data Architecture
 ```
 Challenge {
   gameNumber: number
-  gameType: "connections" | "factor" | "decode" | "impostor" | "grid"
-  remit: RemitItem[][]          // categories grid (Connections, Factor)
-  players: ChallengePlayer[]    // players with v: number[] (Connections: categories, Factor: traits)
+  gameType: "elphenomeno" | "connections" | "factor" | "decode" | "impostor" | "grid"
+  remit: RemitItem[][]          // categories grid (Connections, Factor, El Phenomeno)
+  players: ChallengePlayer[]    // players with v: number[]
   decodeConfig?: DecodeClue[]   // Decode R9: 9 clues with order/text/answer
   impostorConfig?: ImpostorConfig  // Impostor: { categoryId, impostorPlayerId }
   gridConfig?: GridConfig          // Grid: { rowCategories, columnCategories, cells }

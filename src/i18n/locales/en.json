@@ -298,8 +298,9 @@
     "languageDescription": "Select your preferred language"
   },
   "games": {
-    "connections": "Phenomenon Connections",
-    "factor": "Phenomenon Factor",
+    "elphenomeno": "El Phenomeno",
+    "connections": "Connections",
+    "factor": "Factor",
     "decode": "R9 Decode",
     "impostor": "Impostor: World Cup",
     "grid": "Grid Challenge"
