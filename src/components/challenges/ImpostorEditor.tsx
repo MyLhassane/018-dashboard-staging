@@ -71,7 +71,7 @@ export default function ImpostorEditor({ challenge, categories, players, onSave,
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4">
         <div className="bg-surface border border-border rounded-xl w-full max-w-3xl max-h-[95vh] flex flex-col">
-          <div className="flex items-center justify-between p-4 border-b border-border shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border-b border-border shrink-0 gap-2">
             <div className="flex items-center gap-3">
               <button onClick={onClose} className="text-text-2 hover:text-white transition">
                 <ChevronLeft size={20} />
