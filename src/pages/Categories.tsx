@@ -1,5 +1,6 @@
-import { useState, useMemo } from "react";
-import { Search, X, Tags, Save, Plus, Trash2 } from "lucide-react";
+import { useState, useMemo, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
+import { Search, X, Tags, Save, Plus, Trash2, Filter } from "lucide-react";
 import { useData } from "../contexts/DataContext";
 import type { Category, Player } from "../lib/types";
 import Button from "../components/ui/Button";
@@ -20,9 +21,23 @@ const typeColors: Record<string, string> = {
   achievement: "bg-purple-500/10 text-purple-400",
 };
 
+const MISSING_FILTERS: Record<string, (c: Category) => boolean> = {
+  noDescription: (c) => !c.description,
+  noMedia: (c) => !c.media,
+  noNumericIds: (c) => !c.numericIds?.length,
+};
+
+const MISSING_LABELS: Record<string, string> = {
+  noDescription: "dataCompleteness.noDescription",
+  noMedia: "dataCompleteness.noMedia",
+  noNumericIds: "dataCompleteness.noNumericIds",
+};
+
 export default function Categories() {
   const { t } = useTranslation();
   const { categories: allCategories, players: allPlayers, loading, updateCategory, addCategory, removeCategory, updatePlayer } = useData();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const missingFilter = searchParams.get("missing") || "";
   const [query, setQuery] = useState("");
   const [filterType, setFilterType] = useState<string>("");
   const [selected, setSelected] = useState<Category | null>(null);
@@ -78,11 +93,12 @@ export default function Categories() {
 
   const list = useMemo(() =>
     Object.values(allCategories).filter((c) => {
+      if (missingFilter && MISSING_FILTERS[missingFilter] && !MISSING_FILTERS[missingFilter](c)) return false;
       if (query && !c.name.toLowerCase().includes(query.toLowerCase()) && !c.id.includes(query)) return false;
       if (filterType && c.type !== filterType) return false;
       return true;
     }).sort((a, b) => b.sortOrder - a.sortOrder),
-    [allCategories, query, filterType]
+    [allCategories, missingFilter, query, filterType]
   );
 
   const [saving, setSaving] = useState(false);
@@ -111,6 +127,10 @@ export default function Categories() {
     setConfirmDelete(null);
     setSelected(null);
   };
+
+  const clearMissingFilter = useCallback(() => {
+    setSearchParams({});
+  }, [setSearchParams]);
 
   const handleCreateNew = async (data: { name: string; type: string; description: string; linkedPlayerIds: number[]; media: string }) => {
     if (!data.name.trim()) return;
@@ -189,6 +209,22 @@ export default function Categories() {
           ))}
         </select>
       </div>
+
+      {missingFilter && MISSING_LABELS[missingFilter] && (
+        <div className="flex items-center gap-2 px-4 py-2.5 bg-gold-dim/15 border border-gold/20 rounded-lg">
+          <Filter size={14} className="text-gold" />
+          <span className="text-sm font-semibold text-gold flex-1">
+            {t(MISSING_LABELS[missingFilter])} — {list.length} {t("categories.title")}
+          </span>
+          <button
+            onClick={clearMissingFilter}
+            className="text-xs text-text-2 hover:text-white transition flex items-center gap-1"
+          >
+            <X size={14} />
+            {t("common.clear")}
+          </button>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-20">

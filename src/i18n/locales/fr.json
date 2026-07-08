@@ -14,6 +14,7 @@
     "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer cet élément ?",
     "loading": "Chargement…",
     "close": "Fermer",
+    "clear": "Effacer",
     "create": "Créer",
     "dragOrClick": "Glissez ou cliquez pour télécharger"
   },
@@ -221,6 +222,19 @@
     "typeLabel": "Type",
     "notesLabel": "Notes",
     "notesPlaceholder": "Saisissez vos notes…"
+  },
+  "dataCompleteness": {
+    "total": "{{count}} total",
+    "noImage": "Image manquante",
+    "noFirstName": "Prénom manquant",
+    "noPositions": "Postes manquants",
+    "noCategoryLinks": "Aucun lien de catégorie",
+    "noDifficulty": "Niveau manquant",
+    "unpublished": "Non publié",
+    "noPlayers": "Aucun joueur assigné",
+    "noDescription": "Description manquante",
+    "noMedia": "Média manquant",
+    "noNumericIds": "Aucun ID numérique"
   },
   "dataLog": {
     "title": "Journal de données",

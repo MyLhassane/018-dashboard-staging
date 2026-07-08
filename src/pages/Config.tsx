@@ -159,6 +159,24 @@ export default function Config() {
         </div>
       </div>
 
+      {/* Language */}
+      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
+        <h2 className="text-sm font-bold">{t("settings.language")}</h2>
+        <div>
+          <label className="block text-xs text-text-2 font-semibold mb-1.5">{t("settings.language")}</label>
+          <p className="text-xs text-text-2 mb-2">{t("settings.languageDescription")}</p>
+          <select
+            className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-gold/50 transition"
+            value={i18n.language}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+          >
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+          </select>
+        </div>
+      </div>
+
       <div className="bg-surface border border-border rounded-xl p-5 space-y-5">
         <h2 className="text-sm font-bold">{t("settings.appearance")}</h2>
 
@@ -293,24 +311,6 @@ export default function Config() {
           >
             {t("common.add")}
           </Button>
-        </div>
-      </div>
-
-      {/* Language */}
-      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
-        <h2 className="text-sm font-bold">{t("settings.language")}</h2>
-        <div>
-          <label className="block text-xs text-text-2 font-semibold mb-1.5">{t("settings.language")}</label>
-          <p className="text-xs text-text-2 mb-2">{t("settings.languageDescription")}</p>
-          <select
-            className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-gold/50 transition"
-            value={i18n.language}
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
-          >
-            <option value="ar">العربية</option>
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-          </select>
         </div>
       </div>
     </div>

@@ -14,6 +14,7 @@
     "confirmDeleteMessage": "هل أنت متأكد من الحذف؟",
     "loading": "جاري التحميل",
     "close": "إغلاق",
+    "clear": "إلغاء",
     "create": "إنشاء",
     "dragOrClick": "اسحب أو انقر للرفع"
   },
@@ -219,6 +220,19 @@
     "typeLabel": "النوع",
     "notesLabel": "الملاحظات",
     "notesPlaceholder": "أدخل الملاحظات"
+  },
+  "dataCompleteness": {
+    "total": "{{count}} إجمالي",
+    "noImage": "بدون صورة",
+    "noFirstName": "بدون اسم أول",
+    "noPositions": "بدون مراكز",
+    "noCategoryLinks": "بدون روابط فئات",
+    "noDifficulty": "بدون مستوى",
+    "unpublished": "غير منشورة",
+    "noPlayers": "بدون لاعبين",
+    "noDescription": "بدون وصف",
+    "noMedia": "بدون وسائط",
+    "noNumericIds": "بدون معرفات رقمية"
   },
   "dataLog": {
     "title": "سجل البيانات",

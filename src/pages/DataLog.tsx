@@ -4,6 +4,7 @@ import { Database, RefreshCw, Users, Target, Tags, Settings } from "lucide-react
 import { getRecentActivity } from "../lib/db";
 import type { ActivityEntry, ActivityTable } from "../lib/types";
 import Button from "../components/ui/Button";
+import DataCompleteness from "../components/data/DataCompleteness";
 
 export default function DataLog() {
   const { t } = useTranslation();
@@ -40,7 +41,7 @@ export default function DataLog() {
   useEffect(() => { load(); }, []);
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6 max-w-5xl">
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -53,6 +54,8 @@ export default function DataLog() {
           {t("dataLog.refresh")}
         </Button>
       </div>
+
+      <DataCompleteness />
 
       {loading ? (
         <div className="flex justify-center py-20">

@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
-import { Search, X, User, Save, Plus, Trash2 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { Search, X, User, Save, Plus, Trash2, Filter } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useData } from "../contexts/DataContext";
 import type { Player, Category, PlayerDifficulty } from "../lib/types";
@@ -11,6 +12,22 @@ import Pagination from "../components/ui/Pagination";
 import { uploadImageFromDataUrl } from "../lib/upload";
 
 const PAGE_SIZE = 25;
+
+const MISSING_FILTERS: Record<string, (p: Player) => boolean> = {
+  noImage: (p) => !p.image,
+  noFirstName: (p) => !p.g,
+  noPositions: (p) => !p.positions?.length,
+  noCategoryLinks: (p) => !p.categoryLinks || !Object.keys(p.categoryLinks).length,
+  noDifficulty: (p) => !p.difficulty,
+};
+
+const MISSING_LABELS: Record<string, string> = {
+  noImage: "dataCompleteness.noImage",
+  noFirstName: "dataCompleteness.noFirstName",
+  noPositions: "dataCompleteness.noPositions",
+  noCategoryLinks: "dataCompleteness.noCategoryLinks",
+  noDifficulty: "dataCompleteness.noDifficulty",
+};
 
 const DIFFICULTY_OPTIONS: { value: PlayerDifficulty; label: string; color: string }[] = [
   { value: "Beginner", label: "Beginner", color: "bg-green/10 text-green border-green/30" },
@@ -37,6 +54,8 @@ export default function Players() {
   const { players: allPlayers, categories: allCategories, config, loading, updatePlayer, addPlayer, removePlayer } = useData();
   const POSITIONS = config?.positions ?? ["Gardien", "Défense", "Milieu", "Attaquant"];
   const typeNames = useMemo(() => getTypeNames(t), [t]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const missingFilter = searchParams.get("missing") || "";
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Player | null>(null);
   const [showNewForm, setShowNewForm] = useState(false);
@@ -55,6 +74,9 @@ export default function Players() {
 
   const filtered = useMemo(() => {
     let list = allPlayers;
+    if (missingFilter && MISSING_FILTERS[missingFilter]) {
+      list = list.filter(MISSING_FILTERS[missingFilter]);
+    }
     if (query) {
       const q = query.toLowerCase();
       list = list.filter(
@@ -71,7 +93,7 @@ export default function Players() {
       });
     }
     return [...list].sort((a, b) => b.id - a.id);
-  }, [allPlayers, query, filterCategoryId]);
+  }, [allPlayers, missingFilter, query, filterCategoryId]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safeCurrentPage = Math.min(currentPage, totalPages);
@@ -79,6 +101,11 @@ export default function Players() {
     const start = (safeCurrentPage - 1) * PAGE_SIZE;
     return filtered.slice(start, start + PAGE_SIZE);
   }, [filtered, safeCurrentPage]);
+
+  const clearMissingFilter = useCallback(() => {
+    setSearchParams({});
+    setCurrentPage(1);
+  }, [setSearchParams]);
 
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
@@ -244,6 +271,22 @@ export default function Players() {
           />
         </div>
       </div>
+
+      {missingFilter && MISSING_LABELS[missingFilter] && (
+        <div className="flex items-center gap-2 px-4 py-2.5 bg-gold-dim/15 border border-gold/20 rounded-lg">
+          <Filter size={14} className="text-gold" />
+          <span className="text-sm font-semibold text-gold flex-1">
+            {t(MISSING_LABELS[missingFilter])} — {filtered.length} {t("players.title")}
+          </span>
+          <button
+            onClick={clearMissingFilter}
+            className="text-xs text-text-2 hover:text-white transition flex items-center gap-1"
+          >
+            <X size={14} />
+            {t("common.clear")}
+          </button>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-20">

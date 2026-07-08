@@ -14,6 +14,7 @@
     "confirmDeleteMessage": "Are you sure you want to delete this item? This action cannot be undone.",
     "loading": "Loading...",
     "close": "Close",
+    "clear": "Clear",
     "create": "Create",
     "dragOrClick": "Drag or click to upload"
   },
@@ -219,6 +220,19 @@
     "typeLabel": "Type",
     "notesLabel": "Notes",
     "notesPlaceholder": "Add any additional notes..."
+  },
+  "dataCompleteness": {
+    "total": "{{count}} total",
+    "noImage": "Missing image",
+    "noFirstName": "Missing first name",
+    "noPositions": "Missing positions",
+    "noCategoryLinks": "No category links",
+    "noDifficulty": "No difficulty",
+    "unpublished": "Not published",
+    "noPlayers": "No players assigned",
+    "noDescription": "Missing description",
+    "noMedia": "Missing media",
+    "noNumericIds": "No numeric IDs"
   },
   "dataLog": {
     "title": "Data Log",
