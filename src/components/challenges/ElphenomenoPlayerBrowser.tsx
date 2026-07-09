@@ -5,7 +5,7 @@ import type { Player, Category } from "../../lib/types";
 import Button from "../ui/Button";
 import ImagePreview from "../ui/ImagePreview";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 25;
 
 const typeNames: Record<string, string> = {
   league: "categoryTypes.league",
@@ -181,15 +181,15 @@ export default function ElphenomenoPlayerBrowser({
           <div className="flex items-center gap-3">
             <span className="text-xs text-text-2">{t("players.selectedCount", { count: selectedIds.size })}</span>
             <span className="text-xs text-text-2">
-              {t("common.page")} {safePage}/{totalPages}
+              {t("pagination.pageXofY", { page: safePage, total: totalPages })}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" disabled={safePage <= 1} onClick={() => setPage(safePage - 1)}>
-              {t("common.previous")}
+              {t("pagination.previous")}
             </Button>
             <Button variant="ghost" size="sm" disabled={safePage >= totalPages} onClick={() => setPage(safePage + 1)}>
-              {t("common.next")}
+              {t("pagination.next")}
             </Button>
             <Button onClick={handleAdd} disabled={selectedIds.size === 0} icon={<Plus size={16} />}>
               {t("players.add", { count: selectedIds.size })}

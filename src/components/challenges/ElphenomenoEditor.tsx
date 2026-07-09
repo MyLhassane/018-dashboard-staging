@@ -22,14 +22,17 @@ export default function ElphenomenoEditor({ challenge, categories, players, posi
   const [editor, setEditor] = useState<Challenge>(() => ({
     ...challenge,
     players: challenge.players ?? [],
-    remit: challenge.remit ?? [],
+    remit: (() => {
+      const r = challenge.remit ?? [];
+      return r.length === 9 ? r : Array.from({ length: 9 }, (_, i) => r[i] ?? []);
+    })(),
   }));
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerCellIndex, setPickerCellIndex] = useState<number | null>(null);
   const [showPlayerBrowser, setShowPlayerBrowser] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const remitIds = useMemo(() => new Set(editor.remit.flat().map((r) => r.id)), [editor.remit]);
+  const remitIds = useMemo(() => new Set((editor.remit ?? []).flat().filter(Boolean).map((r) => r.id)), [editor.remit]);
 
   const { linkedPlayers, decoyPlayers } = useMemo(() => {
     const linked: { player: ChallengePlayer; index: number }[] = [];
@@ -66,7 +69,7 @@ export default function ElphenomenoEditor({ challenge, categories, players, posi
 
   const handleCellPick = (picked: Category[]) => {
     if (pickerCellIndex === null) return;
-    const newRemit = [...editor.remit];
+    const newRemit = Array.from({ length: 9 }, (_, i) => editor.remit[i] ?? []);
     const cat = picked[0];
     if (cat) {
       newRemit[pickerCellIndex] = [{
@@ -92,20 +95,23 @@ export default function ElphenomenoEditor({ challenge, categories, players, posi
 
   const handlePlayerPick = (selectedPlayers: Player[]) => {
     const newRemitIds = new Set(editor.remit.flat().map((r) => r.id));
-    const newPlayers: ChallengePlayer[] = selectedPlayers.map((p) => {
+    const existingIds = new Set(editor.players.map((p) => p.id));
+    const merged = [...editor.players];
+    for (const p of selectedPlayers) {
+      if (existingIds.has(p.id)) continue;
       const matching = Object.values(p.categoryLinks || {})
         .flat()
         .filter((id) => newRemitIds.has(id));
-      return {
+      merged.push({
         id: p.id,
         f: p.f,
         g: p.g,
         v: matching,
         p: p.positions?.[0] || "",
         image: p.image,
-      };
-    });
-    setEditor({ ...editor, players: newPlayers });
+      });
+    }
+    setEditor({ ...editor, players: merged });
     setShowPlayerBrowser(false);
   };
 
@@ -167,128 +173,132 @@ export default function ElphenomenoEditor({ challenge, categories, players, posi
               </div>
             </div>
 
-            <div>
-              <label className="text-xs text-text-2 font-semibold mb-2 block">{t("elphenomeno.categoryGrid")}</label>
-              <div className="grid grid-cols-3 gap-2">
-                {Array.from({ length: 9 }).map((_, ci) => {
-                  const cell = editor.remit[ci];
-                  const empty = !cell || cell.length === 0;
-                  const catId = empty ? null : cell[0].id;
-                  const count = catId !== null ? linkedCountForCategory(catId) : 0;
-                  const sampleImg = catId !== null ? firstPlayerImageForCategory(catId) : undefined;
-                  const catImg = catId !== null ? categoryImage(catId) : undefined;
-                  return (
-                    <button
-                      key={ci}
-                      onClick={() => { setPickerCellIndex(ci); setPickerOpen(true); }}
-                      className={`relative bg-surface-2 border border-border rounded-lg aspect-square overflow-hidden group hover:border-gold/50 transition`}
-                    >
-                      {empty ? (
-                        <div className="flex items-center justify-center w-full h-full">
-                          <Plus size={24} className="text-text-2" />
-                        </div>
-                      ) : (
-                        <>
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            {catImg ? (
-                              <img src={catImg} className="w-full h-full object-cover opacity-40" />
-                            ) : (
-                              <span className="text-2xl font-bold text-gold/30">{cell[0].displayName}</span>
-                            )}
+            <div className="flex flex-col lg:flex-row gap-5">
+              <div className="lg:w-[280px] xl:w-[320px] shrink-0">
+                <label className="text-xs text-text-2 font-semibold mb-2 block">{t("elphenomeno.categoryGrid")}</label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {Array.from({ length: 9 }).map((_, ci) => {
+                    const cell = editor.remit[ci];
+                    const empty = !cell || cell.length === 0;
+                    const catId = empty ? null : cell[0].id;
+                    const count = catId !== null ? linkedCountForCategory(catId) : 0;
+                    const sampleImg = catId !== null ? firstPlayerImageForCategory(catId) : undefined;
+                    const catImg = catId !== null ? categoryImage(catId) : undefined;
+                    return (
+                      <button
+                        key={ci}
+                        onClick={() => { setPickerCellIndex(ci); setPickerOpen(true); }}
+                        className={`relative bg-surface-2 border border-border rounded-lg aspect-square overflow-hidden group hover:border-gold/50 transition`}
+                      >
+                        {empty ? (
+                          <div className="flex items-center justify-center w-full h-full">
+                            <Plus size={20} className="text-text-2" />
                           </div>
+                        ) : (
+                          <>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              {catImg ? (
+                                <img src={catImg} className="w-full h-full object-cover opacity-40" />
+                              ) : (
+                                <span className="text-xl font-bold text-gold/30">{cell[0].displayName}</span>
+                              )}
+                            </div>
 
-                          <div className="absolute top-1 left-1">
-                            {sampleImg ? (
-                              <img src={sampleImg} className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg border-2 border-surface object-cover shadow-md" />
-                            ) : (
-                              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg border-2 border-dashed border-text-2/30 flex items-center justify-center">
-                                <Plus size={12} className="text-text-2/30" />
+                            <div className="absolute top-0.5 left-0.5">
+                              {sampleImg ? (
+                                <img src={sampleImg} className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg border border-surface object-cover shadow" />
+                              ) : (
+                                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg border border-dashed border-text-2/30 flex items-center justify-center">
+                                  <Plus size={10} className="text-text-2/30" />
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="absolute top-0.5 right-0.5 bg-black/60 text-[9px] font-bold px-1 py-0.5 rounded">
+                              {count}
+                            </div>
+
+                            <div className="absolute bottom-1 left-1 right-1">
+                              <span className="text-[9px] font-bold text-white bg-black/50 px-1 py-0.5 rounded block text-center truncate leading-tight">
+                                {cell[0].displayName}
+                              </span>
+                            </div>
+                          </>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="flex-1 space-y-4 min-w-0">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs text-text-2 font-semibold">
+                      {t("elphenomeno.linkedPlayers", { count: linkedPlayers.length })}
+                    </label>
+                    <Button variant="secondary" size="sm" onClick={() => setShowPlayerBrowser(true)} icon={<Plus size={12} />}>
+                      {t("elphenomeno.selectPlayers")}
+                    </Button>
+                  </div>
+                  <div className="space-y-1 max-h-40 overflow-y-auto">
+                    {linkedPlayers.length === 0 ? (
+                      <div className="text-center py-6 text-text-2 text-sm">{t("elphenomeno.noLinkedPlayers")}</div>
+                    ) : (
+                      linkedPlayers.map(({ player, index }) => {
+                        const catId = player.v.find((id) => remitIds.has(id));
+                        const catImg = catId !== undefined ? categoryImage(catId) : undefined;
+                        return (
+                          <div key={index}
+                            className="flex items-center gap-2 bg-surface-2 border border-border rounded-lg p-1.5"
+                          >
+                            {catImg && (
+                              <div className="w-5 h-5 rounded overflow-hidden shrink-0 border border-border">
+                                <img src={catImg} className="w-full h-full object-cover" />
                               </div>
                             )}
+                            <ImagePreview src={player.image} size={28} />
+                            <span className="font-mono text-[10px] text-text-2 w-7 shrink-0">{player.id}</span>
+                            <span className="text-sm font-semibold truncate">{player.f}</span>
+                            {player.g && <span className="text-xs text-text-2 truncate hidden sm:inline">{player.g}</span>}
+                            <span className="text-[10px] bg-gold-dim/30 text-gold px-1.5 py-0.5 rounded shrink-0">{player.p}</span>
+                            <button onClick={() => removePlayer(index)} className="mr-auto text-text-2 hover:text-red transition shrink-0">
+                              <X size={14} />
+                            </button>
                           </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
 
-                          <div className="absolute top-1 right-1 bg-black/60 text-[10px] font-bold px-1.5 py-0.5 rounded">
-                            {count}
-                          </div>
-
-                          <div className="absolute bottom-1.5 left-1.5 right-1.5">
-                            <span className="text-[10px] sm:text-xs font-bold text-white bg-black/50 px-1.5 py-0.5 rounded block text-center truncate">
-                              {cell[0].displayName}
-                            </span>
-                          </div>
-                        </>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs text-text-2 font-semibold">
-                  {t("elphenomeno.linkedPlayers", { count: linkedPlayers.length })}
-                </label>
-                <Button variant="secondary" size="sm" onClick={() => setShowPlayerBrowser(true)} icon={<Plus size={12} />}>
-                  {t("elphenomeno.selectPlayers")}
-                </Button>
-              </div>
-              <div className="space-y-1 max-h-48 overflow-y-auto">
-                {linkedPlayers.length === 0 ? (
-                  <div className="text-center py-6 text-text-2 text-sm">{t("elphenomeno.noLinkedPlayers")}</div>
-                ) : (
-                  linkedPlayers.map(({ player, index }) => {
-                    const catId = player.v.find((id) => remitIds.has(id));
-                    const catImg = catId !== undefined ? categoryImage(catId) : undefined;
-                    return (
-                      <div key={index}
-                        className="flex items-center gap-2 bg-surface-2 border border-border rounded-lg p-2"
-                      >
-                        {catImg && (
-                          <div className="w-6 h-6 rounded overflow-hidden shrink-0 border border-border">
-                            <img src={catImg} className="w-full h-full object-cover" />
-                          </div>
-                        )}
-                        <ImagePreview src={player.image} size={32} />
-                        <span className="font-mono text-[10px] text-text-2 w-8 shrink-0">{player.id}</span>
-                        <span className="text-sm font-semibold truncate">{player.f}</span>
-                        {player.g && <span className="text-xs text-text-2 truncate hidden sm:inline">{player.g}</span>}
-                        <span className="text-[10px] bg-gold-dim/30 text-gold px-1.5 py-0.5 rounded shrink-0">{player.p}</span>
-                        <button onClick={() => removePlayer(index)} className="mr-auto text-text-2 hover:text-red transition shrink-0">
-                          <X size={14} />
-                        </button>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs text-text-2 font-semibold">
-                  {t("elphenomeno.decoyPlayers", { count: decoyPlayers.length })}
-                </label>
-              </div>
-              <div className="space-y-1 max-h-48 overflow-y-auto">
-                {decoyPlayers.length === 0 ? (
-                  <div className="text-center py-6 text-text-2 text-sm">{t("elphenomeno.noDecoyPlayers")}</div>
-                ) : (
-                  decoyPlayers.map(({ player, index }) => (
-                    <div key={index}
-                      className="flex items-center gap-2 bg-surface-2 border border-border rounded-lg p-2 opacity-70"
-                    >
-                      <ImagePreview src={player.image} size={32} />
-                      <span className="font-mono text-[10px] text-text-2 w-8 shrink-0">{player.id}</span>
-                      <span className="text-sm font-semibold truncate">{player.f}</span>
-                      {player.g && <span className="text-xs text-text-2 truncate hidden sm:inline">{player.g}</span>}
-                      <span className="text-[10px] bg-surface-2 text-text-2 px-1.5 py-0.5 rounded shrink-0">{player.p}</span>
-                      <button onClick={() => removePlayer(index)} className="mr-auto text-text-2 hover:text-red transition shrink-0">
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ))
-                )}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs text-text-2 font-semibold">
+                      {t("elphenomeno.decoyPlayers", { count: decoyPlayers.length })}
+                    </label>
+                  </div>
+                  <div className="space-y-1 max-h-40 overflow-y-auto">
+                    {decoyPlayers.length === 0 ? (
+                      <div className="text-center py-6 text-text-2 text-sm">{t("elphenomeno.noDecoyPlayers")}</div>
+                    ) : (
+                      decoyPlayers.map(({ player, index }) => (
+                        <div key={index}
+                          className="flex items-center gap-2 bg-surface-2 border border-border rounded-lg p-1.5 opacity-70"
+                        >
+                          <ImagePreview src={player.image} size={28} />
+                          <span className="font-mono text-[10px] text-text-2 w-7 shrink-0">{player.id}</span>
+                          <span className="text-sm font-semibold truncate">{player.f}</span>
+                          {player.g && <span className="text-xs text-text-2 truncate hidden sm:inline">{player.g}</span>}
+                          <span className="text-[10px] bg-surface-2 text-text-2 px-1.5 py-0.5 rounded shrink-0">{player.p}</span>
+                          <button onClick={() => removePlayer(index)} className="mr-auto text-text-2 hover:text-red transition shrink-0">
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
