@@ -305,6 +305,21 @@
     "impostor": "المحتال: كأس العالم",
     "grid": "تحدي الشبكة"
   },
+  "elphenomeno": {
+    "categories": "الفئات",
+    "players": "اللاعبين",
+    "linked": "مرتبط",
+    "categoryGrid": "شبكة الفئات 3×3",
+    "linkedPlayers": "اللاعبين المرتبطين ({{count}})",
+    "decoyPlayers": "لاعبي التمويه ({{count}})",
+    "selectPlayers": "اختر لاعبين",
+    "noLinkedPlayers": "لا يوجد لاعبين مرتبطين",
+    "noDecoyPlayers": "لا يوجد لاعبي تمويه",
+    "validationCategories": "تحدي elphenomeno يتطلب 9 فئات بالضبط، العدد الحالي {{count}}",
+    "validationPlayers": "تحدي elphenomeno يتطلب 40 لاعب بالضبط، العدد الحالي {{count}}",
+    "invalidJson": "الملف لا يحتوي على challenge صالح. يجب أن يحتوي على gameNumber, remit, players",
+    "invalidJsonParse": "خطأ في قراءة ملف JSON"
+  },
   "gameChallenges": {
     "title": "إدارة تحديات {{game}}",
     "noChallenges": "لا توجد تحديات لهذه اللعبة",

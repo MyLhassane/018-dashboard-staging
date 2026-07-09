@@ -307,6 +307,21 @@
     "impostor": "Imposteur : Coupe du Monde",
     "grid": "Défi Grille"
   },
+  "elphenomeno": {
+    "categories": "Catégories",
+    "players": "Joueurs",
+    "linked": "Liés",
+    "categoryGrid": "Grille de catégories 3×3",
+    "linkedPlayers": "Joueurs liés ({{count}})",
+    "decoyPlayers": "Leurres ({{count}})",
+    "selectPlayers": "Sélectionner les joueurs",
+    "noLinkedPlayers": "Aucun joueur lié",
+    "noDecoyPlayers": "Aucun leurre",
+    "validationCategories": "Le défi elphenomeno nécessite exactement 9 catégories, actuellement {{count}}",
+    "validationPlayers": "Le défi elphenomeno nécessite exactement 40 joueurs, actuellement {{count}}",
+    "invalidJson": "JSON de défi invalide. Doit contenir gameNumber, remit, players",
+    "invalidJsonParse": "Échec de la lecture du fichier JSON"
+  },
   "gameChallenges": {
     "title": "Défis {{game}}",
     "noChallenges": "Aucun défi pour ce jeu",

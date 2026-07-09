@@ -14,6 +14,7 @@ import FactorEditor from "../components/challenges/FactorEditor";
 import DecodeEditor from "../components/challenges/DecodeEditor";
 import ImpostorEditor from "../components/challenges/ImpostorEditor";
 import GridEditor from "../components/challenges/GridEditor";
+import ElphenomenoEditor from "../components/challenges/ElphenomenoEditor";
 import JsonUploadModal from "../components/challenges/JsonUploadModal";
 
 const GAME_NAMES: Record<string, string> = {
@@ -73,11 +74,11 @@ export default function GameChallenges({ gameType }: GameChallengesProps) {
       const remitCount = data.remit?.flat().length ?? 0;
       const playerCount = data.players?.length ?? 0;
       if (remitCount !== 9) {
-        setValidationError(`elphenomeno challenge requires exactly 9 categories (remit items), got ${remitCount}`);
+        setValidationError(t("elphenomeno.validationCategories", { count: remitCount }));
         return;
       }
       if (playerCount !== 40) {
-        setValidationError(`elphenomeno challenge requires exactly 40 players, got ${playerCount}`);
+        setValidationError(t("elphenomeno.validationPlayers", { count: playerCount }));
         return;
       }
     }
@@ -133,7 +134,7 @@ export default function GameChallenges({ gameType }: GameChallengesProps) {
     };
     switch (gameType) {
       case "elphenomeno":
-        return <ConnectionsEditor {...commonProps} categories={categories} players={players} positions={positions} />;
+        return <ElphenomenoEditor {...commonProps} categories={categories} players={players} positions={positions} />;
       case "connections":
         return <ConnectionsEditor {...commonProps} categories={categories} players={players} positions={positions} />;
       case "factor":

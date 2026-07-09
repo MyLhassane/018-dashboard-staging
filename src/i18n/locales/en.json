@@ -305,6 +305,21 @@
     "impostor": "Impostor: World Cup",
     "grid": "Grid Challenge"
   },
+  "elphenomeno": {
+    "categories": "Categories",
+    "players": "Players",
+    "linked": "Linked",
+    "categoryGrid": "3×3 Category Grid",
+    "linkedPlayers": "Linked Players ({{count}})",
+    "decoyPlayers": "Decoy Players ({{count}})",
+    "selectPlayers": "Select Players",
+    "noLinkedPlayers": "No linked players",
+    "noDecoyPlayers": "No decoy players",
+    "validationCategories": "elphenomeno challenge requires exactly 9 categories, got {{count}}",
+    "validationPlayers": "elphenomeno challenge requires exactly 40 players, got {{count}}",
+    "invalidJson": "Invalid challenge JSON. Must contain gameNumber, remit, players",
+    "invalidJsonParse": "Failed to parse JSON file"
+  },
   "gameChallenges": {
     "title": "{{game}} Challenges",
     "noChallenges": "No challenges for this game",

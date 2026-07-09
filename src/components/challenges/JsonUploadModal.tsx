@@ -29,15 +29,27 @@ export default function JsonUploadModal({ gameType, onClose, onDone }: Props) {
       try {
         const data = JSON.parse(e.target?.result as string);
         if (!data.gameNumber || !data.remit || !data.players) {
-          setError("الملف لا يحتوي على challenge صالح. يجب أن يحتوي على gameNumber, remit, players");
+          setError(t("elphenomeno.invalidJson"));
           return;
         }
         data.gameType = gameType;
         data.updatedAt = new Date().toISOString();
         data.updatedBy = "admin";
+        if (gameType === "elphenomeno") {
+          const remitCount = data.remit?.flat()?.length ?? 0;
+          const playerCount = data.players?.length ?? 0;
+          if (remitCount !== 9) {
+            setError(t("elphenomeno.validationCategories", { count: remitCount }));
+            return;
+          }
+          if (playerCount !== 40) {
+            setError(t("elphenomeno.validationPlayers", { count: playerCount }));
+            return;
+          }
+        }
         setPreview(data as Challenge);
       } catch {
-        setError("خطأ في قراءة ملف JSON");
+        setError(t("elphenomeno.invalidJsonParse"));
       }
     };
     reader.readAsText(f);
