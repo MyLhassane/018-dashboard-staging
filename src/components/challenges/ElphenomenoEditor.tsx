@@ -38,7 +38,7 @@ export default function ElphenomenoEditor({ challenge, categories, players, posi
     const linked: { player: ChallengePlayer; index: number }[] = [];
     const decoy: { player: ChallengePlayer; index: number }[] = [];
     editor.players.forEach((p, i) => {
-      if (p.v.length > 0 && p.v.some((id) => remitIds.has(id))) {
+      if (p.v?.length > 0 && p.v.some((id) => remitIds.has(id))) {
         linked.push({ player: p, index: i });
       } else {
         decoy.push({ player: p, index: i });
