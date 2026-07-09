@@ -42,6 +42,7 @@ export default function GameChallenges({ gameType }: GameChallengesProps) {
   const [publishing, setPublishing] = useState(false);
   const [publishResults, setPublishResults] = useState<PublishResult[] | null>(null);
   const [publishProgress, setPublishProgress] = useState<{ current: number; total: number } | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const loadChallenges = async () => {
     setLoading(true);
@@ -67,6 +68,19 @@ export default function GameChallenges({ gameType }: GameChallengesProps) {
   const positions = config?.positions ?? ["Gardien", "Défense", "Milieu", "Attaquant"];
 
   const handleSave = async (data: Challenge) => {
+    setValidationError(null);
+    if (gameType === "elphenomeno") {
+      const remitCount = data.remit?.flat().length ?? 0;
+      const playerCount = data.players?.length ?? 0;
+      if (remitCount !== 9) {
+        setValidationError(`elphenomeno challenge requires exactly 9 categories (remit items), got ${remitCount}`);
+        return;
+      }
+      if (playerCount !== 40) {
+        setValidationError(`elphenomeno challenge requires exactly 40 players, got ${playerCount}`);
+        return;
+      }
+    }
     const enrichedPlayers = data.players.map((cp) => {
       if (cp.image) return cp;
       const fullPlayer = Object.values(players).find((p) => p.id === cp.id);
@@ -135,7 +149,7 @@ export default function GameChallenges({ gameType }: GameChallengesProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">{t("gameChallenges.title", { game: gameLabel })}</h1>
           <p className="text-sm text-text-2 mt-1">{t("players.challengeCount", { count: localChallenges.length })}</p>
@@ -159,6 +173,10 @@ export default function GameChallenges({ gameType }: GameChallengesProps) {
           }} icon={<Plus size={14} />}>{t("common.new")}</Button>
         </div>
       </div>
+
+      {validationError && (
+        <div className="bg-red/10 text-red text-sm rounded-lg p-3">{validationError}</div>
+      )}
 
       {publishProgress && (
         <div className="bg-blue/10 text-blue text-sm rounded-lg p-3">
